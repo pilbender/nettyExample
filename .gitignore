@@ -1,0 +1,13 @@
+# Maven build artifacts
+/target
+dependency-reduced-pom.xml
+
+# Vim undo files
+*.un~
+
+# Intellij files
+*.iml
+.idea/
+
+# Make sure profiling artifacts are committed
+*.class
