@@ -1,12 +1,8 @@
 package net.raescott.netty;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import io.netty.util.ReferenceCountUtil;
 
 import java.util.List;
 
@@ -19,15 +15,17 @@ public class DiscardServerHandler extends ByteToMessageDecoder {
 		// Discard the received data silently.
 		System.out.println("Message Contents: ");
 		ByteBuf in = (ByteBuf) msg;
+		StringBuilder stringBuilder = new StringBuilder();
 		try {
 			while (in.isReadable()) {
-				System.out.print((char) in.readByte());
-				System.out.flush();
+				stringBuilder.append((char) in.readByte());
 			}
 		} finally {
 			//ReferenceCountUtil.release(msg);
 			ctx.close();
 		}
+		System.out.print(stringBuilder.toString());
+		System.out.flush();
 		System.out.println();
 	}
 
