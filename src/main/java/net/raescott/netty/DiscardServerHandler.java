@@ -1,6 +1,8 @@
 package net.raescott.netty;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
@@ -20,8 +22,11 @@ public class DiscardServerHandler extends ByteToMessageDecoder {
 			while (in.isReadable()) {
 				stringBuilder.append((char) in.readByte());
 			}
+			ctx.write(((ByteBuf) msg).writeBytes(stringBuilder.toString().getBytes()));
+			ctx.flush();
 		} finally {
 			//ReferenceCountUtil.release(msg);
+			//in.release(); // Note: It is now not necessary release because the ctx.write() releases it for us.
 			ctx.close();
 		}
 		System.out.print(stringBuilder.toString());
@@ -31,10 +36,8 @@ public class DiscardServerHandler extends ByteToMessageDecoder {
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) {
-		/* TODO: This can be deleted if we don't end up using it.
-		ChannelFuture channelFuture = ctx.writeAndFlush(""); // TODO: Verify this "" is okay.
-		channelFuture.addListener(ChannelFutureListener.CLOSE);
-		*/
+		//ChannelFuture channelFuture = ctx.writeAndFlush("sample output"); // TODO: Verify this "" is okay.
+		//channelFuture.addListener(ChannelFutureListener.CLOSE);
 	}
 
 	// TODO: I don't see that this method is firing.
